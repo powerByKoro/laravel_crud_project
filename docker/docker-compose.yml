@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+    nginx:
+        build:
+            context: .
+            dockerfile: Nginx.Dockerfile
+        ports:
+            -   80:80
+        links:
+            -   fpm
+        volumes:
+            - ../.:/var/www/webApplication
+    fpm:
+        build:
+            context: .
+            dockerfile: Fpm.Dockerfile
+            args:
+                LOCAL_LINUX_USER: ${LOCAL_LINUX_USER:-0}
+                LOCAL_LINUX_USER_UID: ${LOCAL_LINUX_USER_UID:-0}
+        volumes:
+            -   ../.:/var/www/webApplication
+        links:
+            -   mysql
+    mysql:
+        image: mysql:5.7
+        ports:
+            -   33061:3306
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=web_application
