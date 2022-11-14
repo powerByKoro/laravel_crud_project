@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MakeEventController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware(['auth'])->group(function (){
+
+    Route::get('/', function () {
+        return view('welcome');
+    })->name('welcome');
+
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::post('/', [MakeEventController::class, "index"] );
+
 });
+
+require __DIR__.'/auth.php';
